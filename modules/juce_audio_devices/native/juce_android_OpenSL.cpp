@@ -854,9 +854,10 @@ public:
 
         auto totalPreferredBufferSize    = (bufferSize <= 0) ? getDefaultBufferSize() : bufferSize;
         auto nativeBufferSize            = getNativeBufferSize();
-        bool useHighPerformanceAudioPath = canUseHighPerformanceAudioPath (totalPreferredBufferSize, sampleRate);
+        //bool useHighPerformanceAudioPath = canUseHighPerformanceAudioPath (totalPreferredBufferSize, sampleRate);
 
-        audioBuffersToEnqueue = useHighPerformanceAudioPath ? (totalPreferredBufferSize / nativeBufferSize) : 1;
+        //audioBuffersToEnqueue = useHighPerformanceAudioPath ? (totalPreferredBufferSize / nativeBufferSize) : 1;
+        audioBuffersToEnqueue = (totalPreferredBufferSize / nativeBufferSize);
         actualBufferSize = totalPreferredBufferSize / audioBuffersToEnqueue;
         jassert ((actualBufferSize * audioBuffersToEnqueue) == totalPreferredBufferSize);
 
