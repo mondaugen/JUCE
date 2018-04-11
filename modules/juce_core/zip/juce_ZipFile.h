@@ -29,6 +29,8 @@ namespace juce
 
     This can enumerate the items in a ZIP file and can create suitable stream objects
     to read each one.
+
+    @tags{Core}
 */
 class JUCE_API  ZipFile
 {
@@ -77,6 +79,9 @@ public:
 
         /** The last time the file was modified. */
         Time fileTime;
+
+        /** True if the zip entry is a symbolic link. */
+        bool isSymbolicLink;
     };
 
     //==============================================================================

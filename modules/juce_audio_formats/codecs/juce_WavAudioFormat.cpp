@@ -157,8 +157,8 @@ const char* const WavAudioFormat::tracktionLoopInfo    = "tracktion loop info";
 //==============================================================================
 namespace WavFileHelpers
 {
-    inline int chunkName (const char* const name) noexcept   { return (int) ByteOrder::littleEndianInt (name[0], name[1], name[2], name[3]); }
-    inline size_t roundUpSize (size_t sz) noexcept           { return (sz + 3) & ~3u; }
+    JUCE_CONSTEXPR inline int chunkName (const char* name) noexcept         { return (int) ByteOrder::littleEndianInt (name); }
+    JUCE_CONSTEXPR inline size_t roundUpSize (size_t sz) noexcept           { return (sz + 3) & ~3u; }
 
     #if JUCE_MSVC
      #pragma pack (push, 1)
@@ -1682,7 +1682,7 @@ AudioFormatReader* WavAudioFormat::createReaderFor (InputStream* sourceStream, b
     }
    #endif
 
-    if (r->sampleRate > 0 && r->numChannels > 0 && r->bytesPerFrame > 0)
+    if (r->sampleRate > 0 && r->numChannels > 0 && r->bytesPerFrame > 0 && r->bitsPerSample <= 32)
         return r.release();
 
     if (! deleteStreamIfOpeningFails)

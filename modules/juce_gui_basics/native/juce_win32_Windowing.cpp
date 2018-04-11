@@ -802,7 +802,7 @@ struct OnScreenKeyboard   : public DeletedAtShutdown,
         startTimer (10);
     }
 
-    JUCE_DECLARE_SINGLETON_SINGLETHREADED (OnScreenKeyboard, true)
+    JUCE_DECLARE_SINGLETON_SINGLETHREADED (OnScreenKeyboard, false)
 
 private:
     OnScreenKeyboard()
@@ -2558,6 +2558,7 @@ private:
         else if (isUp || ! (pInfoFlags & POINTER_FLAG_INCONTACT))
         {
             modsToSend = modsToSend.withoutMouseButtons();
+            currentModifiers = currentModifiers.withoutMouseButtons();
         }
 
         handleMouseEvent (MouseInputSource::InputSourceType::pen, pos, modsToSend, pressure,

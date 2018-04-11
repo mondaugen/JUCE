@@ -63,17 +63,6 @@ public:
     }
 
     //==============================================================================
-    static String getTargetFolderName (CodeBlocksOS os)
-    {
-        if (os == windowsTarget)  return "CodeBlocksWindows";
-        if (os == linuxTarget)    return "CodeBlocksLinux";
-
-        // currently no other OSes supported by Codeblocks exporter!
-        jassertfalse;
-        return "CodeBlocksUnknownOS";
-    }
-
-    //==============================================================================
     static CodeBlocksProjectExporter* createForSettings (Project& project, const ValueTree& settings)
     {
         // this will also import legacy jucer files where CodeBlocks only worked for Windows,
@@ -93,7 +82,7 @@ public:
     {
         name = getName (os);
 
-        targetLocationValue.setDefault (getDefaultBuildsRootFolder() + getTargetFolderName (os));
+        targetLocationValue.setDefault (getDefaultBuildsRootFolder() + getTargetFolderForExporter (getValueTreeTypeName (os)));
 
         if (isWindows())
             targetPlatformValue.referTo (settings, Ids::codeBlocksWindowsTarget, getUndoManager());
@@ -426,7 +415,7 @@ private:
             auto cppStandard = config.project.getCppStandardString();
 
             if (cppStandard == "latest")
-                cppStandard = "1z";
+                cppStandard = "17";
 
             cppStandard = "-std=" + String (shouldUseGNUExtensions() ? "gnu++" : "c++") + cppStandard;
 

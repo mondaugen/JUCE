@@ -33,6 +33,10 @@
 #include "../Utility/UI/jucer_ProjucerLookAndFeel.h"
 #include "../Licenses/jucer_LicenseController.h"
 
+#if JUCE_MODULE_AVAILABLE_juce_analytics
+ #include "jucer_ProjucerAnalytics.h"
+#endif
+
 struct ChildProcessCache;
 
 //==============================================================================
@@ -88,7 +92,8 @@ public:
 
     //==============================================================================
     void createNewProject();
-    void updateNewlyOpenedProject (Project&);
+    void createNewProjectFromClipboard();
+    void createNewPIP();
     void askUserToOpenFile();
     bool openFile (const File&);
     bool closeAllDocuments (bool askUserToSave);
@@ -106,8 +111,10 @@ public:
     void showApplicationUsageDataAgreementPopup();
     void dismissApplicationUsageDataAgreementPopup();
 
-    void showPathsWindow();
+    void showPathsWindow (bool highlightJUCEPath = false);
     void showEditorColourSchemeWindow();
+
+    void showPIPCreatorWindow();
 
     void launchForumBrowser();
     void launchModulesBrowser();
@@ -129,6 +136,9 @@ public:
     static int getEditorColourSchemeForGUIColourScheme (const StringArray& schemes, int guiColourSchemeIndex);
 
     //==============================================================================
+    void setAnalyticsEnabled (bool);
+
+    //==============================================================================
     ProjucerLookAndFeel lookAndFeel;
 
     ScopedPointer<StoredSettings> settings;
@@ -142,7 +152,7 @@ public:
     ScopedPointer<ApplicationCommandManager> commandManager;
 
     ScopedPointer<Component> utf8Window, svgPathWindow, aboutWindow, applicationUsageDataWindow,
-                             pathsWindow, editorColourSchemeWindow;
+                             pathsWindow, editorColourSchemeWindow, pipCreatorWindow;
 
     ScopedPointer<FileLogger> logger;
 
@@ -165,6 +175,33 @@ private:
 
     void handleAsyncUpdate() override;
     void initCommandManager();
+
+    void deleteTemporaryFiles() const noexcept;
+
+    void createExamplesPopupMenu (PopupMenu&) noexcept;
+    Array<File> getSortedExampleDirectories() noexcept;
+    Array<File> getSortedExampleFilesInDirectory (const File&) const noexcept;
+
+    bool findWindowAndOpenPIP (const File&);
+
+    File getJUCEExamplesDirectoryPathFromGlobal() noexcept;
+    void findAndLaunchExample (int);
+    File findDemoRunnerExecutable() noexcept;
+    File findDemoRunnerProject() noexcept;
+    void launchDemoRunner();
+
+    int numExamples = 0;
+    ScopedPointer<AlertWindow> demoRunnerAlert;
+
+   #if JUCE_LINUX
+    ChildProcess makeProcess;
+   #endif
+
+    void resetAnalytics() noexcept;
+    void setupAnalytics();
+
+    void showSetJUCEPathAlert();
+    ScopedPointer<AlertWindow> pathAlert;
 
     //==============================================================================
     void setColourScheme (int index, bool saveSetting);
